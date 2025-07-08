@@ -23,3 +23,4 @@ rootProject.name = "My Application"
 include(":GreetingCard")
 include(":HappyBirthday")
 include(":LearnTogether")
+include(":TaskCompleted")
