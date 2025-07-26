@@ -1,4 +1,4 @@
-package com.huojieren.quiz
+package com.huojieren.learningKotlin
 // 泛型、对象和扩展
 
 interface ProgressPrintable {

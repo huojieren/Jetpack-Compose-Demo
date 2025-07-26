@@ -1,4 +1,4 @@
-package com.huojieren.trickOrTreat
+package com.huojieren.learningKotlin
 
 fun main() {
     val treatFunction = trickOrTreat(false) { "$it quarters" }
