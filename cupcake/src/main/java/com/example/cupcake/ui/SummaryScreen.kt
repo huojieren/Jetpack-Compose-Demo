@@ -47,8 +47,10 @@ import com.example.cupcake.ui.theme.CupcakeTheme
  */
 @Composable
 fun OrderSummaryScreen(
+    modifier: Modifier = Modifier,
     orderUiState: OrderUiState,
-    modifier: Modifier = Modifier
+    onCancelButtonClicked: () -> Unit,
+    onSendButtonClicked: (String, String) -> Unit,
 ) {
     val resources = LocalContext.current.resources
 
@@ -58,14 +60,14 @@ fun OrderSummaryScreen(
         orderUiState.quantity
     )
     //Load and format a string resource with the parameters.
-    stringResource(
+    val orderSummary = stringResource(
         R.string.order_details,
         numberOfCupcakes,
         orderUiState.flavor,
         orderUiState.date,
         orderUiState.quantity
     )
-    stringResource(R.string.new_cupcake_order)
+    val newOrder = stringResource(R.string.new_cupcake_order)
     //Create a list of order summary to display
     val items = listOf(
         // Summary line 1: display selected quantity
@@ -103,13 +105,13 @@ fun OrderSummaryScreen(
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
+                    onClick = { onSendButtonClicked(newOrder, orderSummary) }
                 ) {
                     Text(stringResource(R.string.send))
                 }
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
+                    onClick = onCancelButtonClicked
                 ) {
                     Text(stringResource(R.string.cancel))
                 }
@@ -123,8 +125,10 @@ fun OrderSummaryScreen(
 fun OrderSummaryPreview() {
     CupcakeTheme {
         OrderSummaryScreen(
+            modifier = Modifier.fillMaxHeight(),
             orderUiState = OrderUiState(0, "Test", "Test", "$300.00"),
-            modifier = Modifier.fillMaxHeight()
+            onSendButtonClicked = { subject: String, summary: String -> },
+            onCancelButtonClicked = {},
         )
     }
 }
