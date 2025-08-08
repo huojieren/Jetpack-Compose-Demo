@@ -18,6 +18,7 @@ package com.example.racetracker.ui
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 
 /**
  * This class represents a state holder for race participant.
@@ -39,6 +40,17 @@ class RaceParticipant(
      */
     var currentProgress by mutableStateOf(initialProgress)
         private set
+
+    /**
+     * suspend 修饰符，使其成为挂起函数。挂起函数与常规函数类似，只不过它可以挂起并于稍后恢复。
+     * 为了做到这一点，挂起函数只能从提供此功能的其他挂起函数中调用。
+     */
+    suspend fun run() {
+        while (currentProgress < maxProgress) {
+            delay(progressDelayMillis)
+            currentProgress += progressIncrement
+        }
+    }
 
     /**
      * Regardless of the value of [initialProgress] the reset function will reset the

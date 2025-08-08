@@ -36,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.racetracker.R
 import com.example.racetracker.ui.theme.RaceTrackerTheme
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun RaceTrackerApp() {
@@ -66,6 +69,22 @@ fun RaceTrackerApp() {
         RaceParticipant(name = "Player 2", progressIncrement = 2)
     }
     var raceInProgress by remember { mutableStateOf(false) }
+
+    if (raceInProgress) {
+        /*
+         * 将 playerOne 和 playerTwo 对象作为 key 添加到 LaunchedEffect。
+         * 与 Text() 可组合项在其文本值变化时进行重组类似，如果 LaunchedEffect() 的任何关键实参发生变化，
+         * 系统会取消相应底层协程并重新启动新的底层协程。
+         */
+        LaunchedEffect(playerOne, playerTwo) {
+            // coroutineScope 代码块只会在代码块内的所有代码均完成执行后才会返回并继续执行。
+            coroutineScope {
+                launch { playerOne.run() }
+                launch { playerTwo.run() }
+            }
+            raceInProgress = false
+        }
+    }
 
     RaceTrackerScreen(
         playerOne = playerOne,
