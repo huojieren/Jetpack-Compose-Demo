@@ -148,7 +148,10 @@ private fun BlurActions(
     ) {
         when (blurUiState) {
             is BlurUiState.Default -> {
-                Button(onClick = onStartClick) {
+                Button(
+                    onClick = onStartClick,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text(stringResource(R.string.start))
                 }
             }
@@ -159,16 +162,10 @@ private fun BlurActions(
             }
 
             is BlurUiState.Complete -> {
-                Button(onStartClick) {
-                    Text(stringResource(R.string.start))
-                }
+                Button(onStartClick) { Text(stringResource(R.string.start)) }
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_small)))
-                FilledTonalButton(
-                    onClick = {
-                        onSeeFileClick(blurUiState.outputUri)
-                    }) {
-                    Text(stringResource(R.string.see_file))
-                }
+                FilledTonalButton({ onSeeFileClick(blurUiState.outputUri) })
+                { Text(stringResource(R.string.see_file)) }
             }
         }
     }

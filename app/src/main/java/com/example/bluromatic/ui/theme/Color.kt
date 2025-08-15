@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.bluromatic.data
+package com.example.bluromatic.ui.theme
 
-import androidx.work.WorkInfo
-import kotlinx.coroutines.flow.Flow
+import androidx.compose.ui.graphics.Color
 
-interface BluromaticRepository {
-    val outputWorkInfo: Flow<WorkInfo>
-    fun applyBlur(blurLevel: Int)
-    fun cancelWork()
-}
+val md_theme_light_primary = Color(0xFF006A68)
+val md_theme_light_secondaryContainer = Color(0xFFCCE8E6)
+val md_theme_light_background = Color(0xFFFAFDFC)
+
+val md_theme_dark_primary = Color(0xFF2EDCD8)
+val md_theme_dark_secondaryContainer = Color(0xFF324B4A)
+val md_theme_dark_background = Color(0xFF191C1C)

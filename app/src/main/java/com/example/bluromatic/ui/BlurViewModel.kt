@@ -52,9 +52,7 @@ class BlurViewModel(private val bluromaticRepository: BluromaticRepository) : Vi
                     BlurUiState.Default
                 }
 
-                else -> {
-                    BlurUiState.Loading
-                }
+                else -> BlurUiState.Loading
             }
         }.stateIn(
             scope = viewModelScope,

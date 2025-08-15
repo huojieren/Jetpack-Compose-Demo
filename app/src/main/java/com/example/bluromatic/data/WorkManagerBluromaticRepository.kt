@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.mapNotNull
 
 class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
 
-    private val imageUri: Uri = context.getImageUri()
+    private var imageUri: Uri = context.getImageUri()
     private val workManager = WorkManager.getInstance(context)
 
     override val outputWorkInfo: Flow<WorkInfo> =
@@ -52,38 +52,36 @@ class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
      * @param blurLevel The amount to blur the image
      */
     override fun applyBlur(blurLevel: Int) {
-        val constraints = Constraints.Builder()
-            .setRequiresBatteryNotLow(true) // 仅在设备电量不低时运行
-            .build()
-
         // Add WorkRequest to Cleanup temporary images
         var continuation = workManager
             .beginUniqueWork(
                 IMAGE_MANIPULATION_WORK_NAME,
                 ExistingWorkPolicy.REPLACE,
-                /*
-                 * 使用的替代方法创建 OneTimeWorkRequest 对象。调用 OneTimeWorkRequest.from(CleanupWorker::class.java)
-                 * 等同于调用 OneTimeWorkRequestBuilder<CleanupWorker>().build()。
-                 * OneTimeWorkRequest 类来自 AndroidX Work 库，而 OneTimeWorkRequestBuilder 是由 WorkManager KTX 扩展提供的辅助函数。
-                 */
                 OneTimeWorkRequest.from(CleanupWorker::class.java)
             )
 
+        // Create low battery constraint
+        val constraints = Constraints.Builder()
+            .setRequiresBatteryNotLow(true)
+            .build()
+
         // Add WorkRequest to blur the image
         val blurBuilder = OneTimeWorkRequestBuilder<BlurWorker>()
-        // Input data object
+
+        // Input the Uri for the blur operation along with the blur level
         blurBuilder.setInputData(createInputDataForWorkRequest(blurLevel, imageUri))
+
         blurBuilder.setConstraints(constraints)
-        // Add the blur work request to the chain
+
         continuation = continuation.then(blurBuilder.build())
 
         // Add WorkRequest to save the image to the filesystem
         val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>()
-            .addTag("TAG_OUTPUT")
+            .addTag(TAG_OUTPUT)
             .build()
         continuation = continuation.then(save)
 
-        // Start the work
+        // Actually start the work
         continuation.enqueue()
     }
 
@@ -91,7 +89,6 @@ class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
      * Cancel any ongoing WorkRequests
      * */
     override fun cancelWork() {
-        // 遵循关注点分离的设计原则，可组合函数不得直接与代码库交互。可组合函数与 ViewModel 交互，ViewModel 与代码库交互。
         workManager.cancelUniqueWork(IMAGE_MANIPULATION_WORK_NAME)
     }
 

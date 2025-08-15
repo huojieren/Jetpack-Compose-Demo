@@ -16,11 +16,12 @@
 
 package com.example.bluromatic.data
 
-import androidx.work.WorkInfo
-import kotlinx.coroutines.flow.Flow
+import android.content.Context
 
-interface BluromaticRepository {
-    val outputWorkInfo: Flow<WorkInfo>
-    fun applyBlur(blurLevel: Int)
-    fun cancelWork()
+interface AppContainer {
+    val bluromaticRepository: BluromaticRepository
+}
+
+class DefaultAppContainer(context: Context) : AppContainer {
+    override val bluromaticRepository = WorkManagerBluromaticRepository(context)
 }
