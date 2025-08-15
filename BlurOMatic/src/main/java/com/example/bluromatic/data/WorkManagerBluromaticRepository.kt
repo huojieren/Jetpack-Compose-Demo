@@ -79,7 +79,7 @@ class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
 
         // Add WorkRequest to save the image to the filesystem
         val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>()
-            .addTag("TAG_OUTPUT")
+            .addTag(TAG_OUTPUT)
             .build()
         continuation = continuation.then(save)
 
